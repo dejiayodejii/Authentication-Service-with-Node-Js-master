@@ -6,7 +6,7 @@ const validateRegistrationInput = require("../validators/reg_validator");
 const Auth = {};
 
 Auth.signUp = async (req, res) => {
-  const { error,} = await validateRegistrationInput(req.body);
+  const { error} = await validateRegistrationInput(req.body);
 
   if (error) {
     return res.status(400).json({
@@ -26,7 +26,6 @@ Auth.signUp = async (req, res) => {
     }
 
     const hashedPassword = await bcryptjs.hash(password, 8);
-
     const otp = Utils.generateOTP();
 
     await UserModel({
@@ -52,8 +51,8 @@ Auth.signUp = async (req, res) => {
   }
 };
 
-Auth.login = async (req, res) => {};
-Auth.forgotPassword = async (req, res) => {};
+Auth.login = async () => {};
+Auth.forgotPassword = async () => {};
 
 Auth.resendOtp = async (req, res) => {
   const email = req.body;
@@ -94,6 +93,6 @@ Auth.verifyAccount = async (req, res) => {
      return res.status(400).send("Invalid OTP");
    }
 };
-Auth.resetPassword = async (req, res) => {};
+Auth.resetPassword = async () => {};
 
 module.exports = Auth;

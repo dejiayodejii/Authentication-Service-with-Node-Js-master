@@ -20,6 +20,7 @@
     "otp-generator": "^4.0.1"
   },
   "devDependencies": {
+    "eslint": "^8.56.0",
     "nodemon": "^3.0.3"
   }
 }

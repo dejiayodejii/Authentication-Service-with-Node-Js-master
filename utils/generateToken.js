@@ -1,6 +1,6 @@
 const otpGenerator = require("otp-generator");
 const nodemailer = require("nodemailer");
-require("dotenv").config();
+const process = require('dotenv').config();
 
 function generateOTP() {
   return otpGenerator.generate(6, { upperCase: false, specialChars: false });

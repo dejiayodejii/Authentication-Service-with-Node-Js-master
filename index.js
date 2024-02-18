@@ -2,7 +2,7 @@ const express = require('express');
 const authRouter = require('./routes/auth_router');
 const app = express();
 const mongoose = require('mongoose');
-require('dotenv').config();
+const process = require('dotenv').config();
 
 
 
