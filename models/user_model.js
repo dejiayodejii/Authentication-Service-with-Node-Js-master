@@ -8,7 +8,7 @@ const userModel = mongoose.Schema({
   phone: String,
   source: String,
   verificationCode: {type: String},
-  isVerified: {type: Boolean, default:false},
+  isVerified: {type: Boolean, default:false,},
   passwordresetcode: String,
   creation_date: { type: Date, default: Date.now }
 })

@@ -2,11 +2,13 @@ const UserModel = require("../models/user_model");
 const Utils = require("../utils/generateToken");
 const bcryptjs = require("bcryptjs");
 const validateRegistrationInput = require("../validators/reg_validator");
+const validateLoginInput = require('../validators/login_validator');
+const Helpers = require('./helpers');
 
 const Auth = {};
 
 Auth.signUp = async (req, res) => {
-  const { error} = await validateRegistrationInput(req.body);
+  const { error } = await validateRegistrationInput(req.body);
 
   if (error) {
     return res.status(400).json({
@@ -24,15 +26,13 @@ Auth.signUp = async (req, res) => {
         message: "User with same email already exists!",
       });
     }
-
-    const hashedPassword = await bcryptjs.hash(password, 8);
     const otp = Utils.generateOTP();
 
     await UserModel({
       name: name,
       phone: phoneNumber,
       email: email,
-      password: hashedPassword,
+      password: Helpers.HashValue(password),
       source: source,
       verificationCode: otp,
     }).save();
@@ -51,8 +51,31 @@ Auth.signUp = async (req, res) => {
   }
 };
 
-Auth.login = async () => {};
-Auth.forgotPassword = async () => {};
+Auth.login = async (req, res) => {
+
+  const { email, password } = req.body;
+  const { errors, isValid } = validateLoginInput({ email, password });
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  const user = UserModel.findOne({ email: email.toLowerCase().trim() });
+
+  if (!user) {
+    errors.email = "No account matched with email provided";
+    return res.status(404).json(errors);
+  }
+  let isPassword = Helpers.UnHashValue(password, user.password);
+  if (isPassword) {
+    return res.status(200).json({ message: 'Login Succesful' });
+  }
+  errors.password = "Password is incorrect";
+  return res.status(401).json(errors);
+
+};
+
+
+Auth.forgotPassword = async () => { };
 
 Auth.resendOtp = async (req, res) => {
   const email = req.body;
@@ -61,6 +84,7 @@ Auth.resendOtp = async (req, res) => {
   const user = await UserModel.findOne({
     email,
   });
+
   if (!user) {
     return res.status(404).send("User not found");
   }
@@ -86,13 +110,13 @@ Auth.verifyAccount = async (req, res) => {
   if (!user) {
     return res.status(404).send("User not found");
   }
-   if (user.verificationCode === otp) {
-     user.isVerified = true;
-     return res.status(200).send("Account Verified Successfully!");
-   } else {
-     return res.status(400).send("Invalid OTP");
-   }
+  if (user.verificationCode === otp) {
+    user.isVerified = true;
+    return res.status(200).send("Account Verified Successfully!");
+  } else {
+    return res.status(400).send("Invalid OTP");
+  }
 };
-Auth.resetPassword = async () => {};
+Auth.resetPassword = async () => { };
 
 module.exports = Auth;
