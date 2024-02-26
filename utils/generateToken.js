@@ -1,14 +1,15 @@
 const otpGenerator = require("otp-generator");
 const nodemailer = require("nodemailer");
-const process = require('dotenv').config();
+require('dotenv').config();
 
 function generateOTP() {
   return otpGenerator.generate(6, { upperCase: false, specialChars: false });
 }
 
+// eslint-disable-next-line no-undef
 const password = process.env.MAIL_PASSWORD;
 
-function sendOTP(email, otp) {
+function sendOTP(email, otp, subject) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
 
@@ -24,7 +25,7 @@ function sendOTP(email, otp) {
   const mailOptions = {
     from: "dejiayodeji1@gmail.com",
     to: email,
-    subject: "Account Verification OTP",
+    subject:subject ?? "Account Verification OTP",
     text: `Your OTP for account verification is: ${otp}`,
   };
 

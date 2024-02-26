@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
 const express = require('express');
 const authRouter = require('./routes/auth_router');
 const app = express();
 const mongoose = require('mongoose');
-const process = require('dotenv').config();
+ require('dotenv').config();
 
 
 
 const port = process.env.PORT || 5000;
+
 
 const DB = process.env.MONGO_DB
 

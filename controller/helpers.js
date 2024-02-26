@@ -2,13 +2,22 @@ const bcrypt = require('bcryptjs');
 
 const Helpers = {};
 
-Helpers.HashValue = function HashValue(value) {
-	return bcrypt.hashSync(value, 12);
+Helpers.HashValue =  function HashValue(value) {
+	return  bcrypt.hashSync(value, 12);
 };
 
-Helpers.UnHashValue = function UnHashValue(plain, hashedValue) {
-	return bcrypt.compareSync(plain, hashedValue);
+/**
+ * 
+ * @param {*String} plain 
+ * @param {String} hashedValue 
+ * @returns 
+ */
+
+Helpers.UnHashValue = async function UnHashValue(plain, hashedValue) {
+    const res = await bcrypt.compare(plain, hashedValue);
+    return res;
 };
+
 
 
 
